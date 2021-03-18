@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script rel="stylesheet" src="{% static 'user/js/jquery-1.11.0.js' %}"></script>
+    <script rel="stylesheet" src="{% static 'goods/js/vue.js' %}"></script>
+    <script rel="stylesheet" src="{% static 'goods/js/vue-resource.js' %}"></script>
+</head>
+<body>
+    <div id="content">
+        {% verbatim myblock %}
+            {{ hello }}
+            <button v-on:click="click1()">点击</button>
+            <button v-on:click="click2()">点击</button>
+        {% endverbatim myblock %}
+    {% csrf_token %}
+    </div>
+
+    <script>
+        var csrf_token = $("input[name='csrfmiddlewaretoken']").val();
+        var vue =new Vue({
+            el:"#content",
+            data:{
+                hello:"张三"
+            },
+            methods:{
+                "click1":function () {
+                    alert("hello world")
+                },
+                "click2":function () {
+                    this.$http.post('/goods/demo/vue/api/', {
+                        firstName: 'Fred',
+                        lastName: 'Flintstone',
+                        csrfmiddlewaretoken: csrf_token,
+                      })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

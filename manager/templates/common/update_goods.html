@@ -1,0 +1,78 @@
+{% extends 'base/manage_base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>优选农产品--商品修改</title>
+{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+    <form action="{% url 'manager:update_goods' goods.id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+        <input type="hidden" value="{{ goods.id }}" name="goods_id">
+     <p>
+         <textarea type="text" class="form-control" placeholder="商品名称" required name="goods_name">{{ goods.goods_name }}</textarea>
+     </p>
+    <p>
+         <input type="number" class="form-control" placeholder="现价" value="{{ goods.goods_oprice }}" required  name="goods_oprice">
+    </p>
+    <p>
+         <input type="number" class="form-control" placeholder="原价" value="{{ goods.goods_xprice }}" required  name="goods_xprice">
+    </p>
+    <p>
+         <input type="number" class="form-control" placeholder="数量" value="{{ goods.goods_count }}" required  name="goods_count">
+    </p>
+    <p>
+         <input type="text" class="form-control" placeholder="保质期" value="{{ goods.safe_date }}" required  name="safe_date" maxlength="10">
+    </p>
+    <p>
+         <input type="text" class="form-control" placeholder="存储方法" value="{{ goods.goods_method }}" required  name="goods_method" maxlength="100">
+    </p>
+    <p>
+         <input type="text" class="form-control" placeholder="商品简介" value="{{ goods.goods_description }}" required  name="goods_description" maxlength="100">
+    </p>
+    <p><img src="/static/{{ goods.goods_pic }}" alt="{{ goods.goods_name }}">
+         <input type="file" class="form-control" name="goods_pic">
+    </p>
+    <p>
+         <input type="text" class="form-control" placeholder="配送地址" value="{{ goods.goods_address }}" required   name="goods_address" maxlength="50">
+    </p>
+    <p>
+        <select name="type" id="type" class="form-control" required>
+            {% for type in type_list %}
+                <option value="{{ type.id }}" {% if  type.id == goods.type_id %} selected {% endif %}>
+                    {{ type.type_name }}
+                </option>
+            {% endfor %}
+
+        </select>
+    </p>
+    <p>
+        <label class="radio-inline">
+          <input type="radio" name="status" id="inlineRadio1" value="1" {% if goods.status == 1 %}
+          checked
+          {% endif %}> 上架
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="status" id="inlineRadio2" value="0" {% if goods.status == 0 %}
+          checked
+          {% endif %}> 下架
+
+        </label>
+    </p>
+    <p>
+        <textarea name="goods_info" id="goods_info" >{{ goods.goods_info }}</textarea>
+    </p>
+    <button class="btn btn-primary">提交</button>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace("goods_info",{uiColor:'#5dd733'})
+    </script>
+{% endblock %}

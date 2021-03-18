@@ -1,0 +1,112 @@
+{% extends 'base/manage_base.html' %}
+{% load static %}
+{% load manager_extras %}
+
+{% block title %}
+    <title>商品列表</title>
+{% endblock %}
+
+{% block style %}
+
+  <link href="/static/manager/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <style>
+    th{color: black;}
+    tr{text-align: center}
+    </style>
+{% endblock %}
+
+{% block content %}
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+          <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">商品列表</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                      <th width="160px">商品名称</th>
+                      <th>现价</th>
+                      <th>原价</th>
+                      <th>商品数量</th>
+                      <th>生产日期</th>
+                      <th>保质期</th>
+                      <th width="120px">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for goods in goods_list %}
+                    <tr>
+                      <td><a href="{% url 'manager:goods_detail' goods.id %}">{{ goods.goods_name | set_goods_name }}</a></td>
+                      <td>{{ goods.goods_oprice }}</td>
+                      <td>{{ goods.goods_xprice }}</td>
+                      <td>{{ goods.goods_count }}</td>
+                      <td>{{ goods.goods_production }}</td>
+                      <td>{{ goods.safe_date }}</td>
+                      <td>
+                          {% if goods.status == 1 %}
+                           <a href="{% url 'manager:update_status' goods.id %}" class="btn btn-warning btn-sm" style="float: left">下架</a>
+                          {% else %}
+                          <a href="{% url 'manager:update_status' goods.id %}" class="btn btn-primary btn-sm"  style="float: left">上架</a>
+                          {% endif %}
+                          <a href="{% url 'manager:update_goods' goods.id %}" class="btn btn-success btn-sm"  style="float: left">编辑</a>
+                      </td>
+                    </tr>
+{#                      {% empty %}#}
+{#                      <tr>#}
+{#                      <td colspan="7">当前没有商品，请添加商品。</td>#}
+{#                      </tr>#}
+                  {% endfor %}
+                  </tbody>
+                </table>
+                <ul class="list">
+               {% if goods_list.has_previous %}
+                <a href="{% url 'manager:goods_list' %}?page={{ goods_list.previous_page_number }}" class="btn-sm btn">&lt;</a>
+            {% endif %}
+            {% for page in page_list %}
+                {% if request.GET.page %}
+                    {% if page == request.GET.page|add:0 %}
+                        <a href="{% url 'manager:goods_list' %}?page={{ page }}" class="btn-sm btn-success btn">{{ page }}</a>
+                    {% elif  request.GET.page|add:0 > goods_list.number and page == 1%}
+                        <a href="{% url 'manager:goods_list' %}?page={{ page }}" class="btn-sm btn-success btn">{{ page }}</a>
+                    {% else %}
+                        <a href="{% url 'manager:goods_list' %}?page={{ page }}" class="btn-sm btn">{{ page }}</a>
+                    {% endif %}
+                {% else %}
+                     {% if page == 1 %}
+                        <a href="{% url 'manager:goods_list' %}?page={{ page }}" class="btn-sm btn-success btn">{{ page }}</a>
+                        {% else %}
+                        <a href="{% url 'manager:goods_list' %}?page={{ page }}" class="btn-sm btn">{{ page }}</a>
+                     {% endif %}
+                {% endif %}
+            {% endfor %}
+             {% if goods_list.has_next %}
+                <a href="{% url 'manager:goods_list' %}?page={{ goods_list.next_page_number }}" class="btn-sm btn">&gt;</a>
+             {% endif %}
+            </ul>
+
+              </div>
+            </div>
+          </div>
+
+{% endblock %}
+
+{% block script %}
+<!-- Page level plugins -->
+  <script src="/static/manager/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/manager/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+  <!-- Page level custom scripts -->
+
+    <!--
+     <script src="/static/manager/js/demo/datatables-demo.js"></script>
+    -->
+{% endblock %}
+
+
+

@@ -1,0 +1,26 @@
+{% extends 'base/manage_base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>数据有误！</title>
+{% endblock %}
+
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+  <!-- 404 Error Text -->
+      <div class="text-center">
+        <div class="error mx-auto" data-text="404">404</div>
+        <p class="lead text-gray-800 mb-5">Page Not Found</p>
+        <p class="text-gray-500 mb-0">暂无数据！</p>
+        <a href="{% url 'manager:index' %}">&larr;返回首页</a>
+      </div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
+

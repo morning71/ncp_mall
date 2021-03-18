@@ -1,0 +1,17 @@
+certifi==2018.8.24
+cffi==1.13.2
+cryptography==2.8
+Django==2.1.8
+django-ckeditor==5.8.0
+django-js-asset==1.2.2
+mysqlclient==1.4.4
+Pillow==6.2.1
+pycparser==2.19
+pycryptodome==3.9.4
+pycryptodomex==3.9.4
+pyOpenSSL==19.1.0
+python-alipay-sdk==2.0.1
+pytz==2019.3
+six==1.13.0
+wincertstore==0.2
+

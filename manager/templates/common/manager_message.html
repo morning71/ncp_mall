@@ -1,0 +1,64 @@
+{% extends 'base/manage_base.html' %}
+{% load static %}
+{% load manager_extras %}
+
+{% block title %}
+    <title>个人信息</title>
+{% endblock %}
+
+{% block style %}
+    <style>
+    tr{color: black;}
+    img{width: 150px;height: 150px;}
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div style="padding-bottom: 10px">
+    <a href="{% url 'manager:index' %}" class="btn btn-success">返回首页</a>
+    <a href="{% url 'manager:update_message' %}" class="btn btn-primary">编辑信息</a>
+    <a class="btn btn-primary" href="{% url 'manager:logout' %}" data-toggle="modal" data-target="#changepwd">修改密码</a>
+</div>
+<table class="table table-bordered table-hover">
+    <tr>
+        <td rowspan="4"><img src="/static/{{ manager.image }}" alt="{{ manager.manager_name }}"></td>
+        <td>用户名：{{ manager.manager_name }}</td>
+    </tr>
+    <tr>
+        <td>密&nbsp;&nbsp;码：{{ manager.password | set_password}}</td>
+    </tr>
+    <tr>
+        <td>邮&nbsp;&nbsp;箱：{{ manager.email }}</td>
+    </tr>
+    <div style="color: red">{{ message }}</div>
+     <div class="modal fade" id="changepwd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">确定修改密码?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+          <form action="{% url 'manager:manager_message' %}" method="post">
+              {% csrf_token %}
+            <input class="modal-body" placeholder="请输入原密码" name="original_password" type="password" required>
+            <input class="modal-body" placeholder="请输入现密码" name="current_password" type="password" required>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">关闭</button>
+              <button class="btn btn-primary" type="submit">提交</button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+</table>
+
+{% endblock %}
+
+
+{% block script %}
+
+
+{% endblock %}

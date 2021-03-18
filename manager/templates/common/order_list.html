@@ -1,0 +1,138 @@
+{% extends 'base/manage_base.html' %}
+{% load static %}
+{% load manager_extras %}
+
+{% block title %}
+    <title>订单列表</title>
+{% endblock %}
+
+{% block style %}
+
+
+  <link href="/static/manager/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/static/manager/css/list.css">
+    <style>
+    th{color: black;}
+    tr{text-align: center}
+    </style>
+{% endblock %}
+
+{% block content %}
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">订单列表</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+              <table class="table table-hover table-bordered">
+             <thead>
+                    <tr>
+                      <th style="width: 50px">订单编号</th>
+                      <th>商品名称</th>
+                      <th>数量</th>
+                      <th>总价</th>
+                      <th>支付状态</th>
+                      <th>发货状态</th>
+                      <th>收货状态</th>
+                      <th>评价状态</th>
+                      <th width="120px">操作</th>
+                    </tr>
+            </thead>
+            <tbody>
+            {% for order in orderinfo_list %}
+              <tr>
+                <td><a href="{% url 'manager:order_detail' order.id %}">{{ order.order_code |set_goods_name }}</a></td>
+                <td>{{ order.goods.goods_name | set_goods_name}}</td>
+                <td>{{ order.number }}</td>
+                <td>{% widthratio order.money 1 order.number %}</td>
+                  <td>
+                      {% if order.order.pay_status == 0 %}
+                          <span class="btn-warning btn-sm">未支付</span>
+                      {% else %}<span class="btn-success btn-sm">已支付</span>{% endif %}</td>
+                <td>
+                    {% if order.send_status == 0 %}
+                        <span class="btn-danger btn-sm">未发货</span>
+                    {% else %}
+                        <span class="btn-sm btn-success">已发货</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if order.receive_status == 0 %}
+                    <span class="btn-sm btn-primary">未收货</span>
+                    {% else %}
+                    <span class="btn-sm btn-success">已收货</span>{% endif %}
+                </td>
+                <td>
+                    {% if order.comment_status == 0 %}
+                    <span class="btn-sm btn-primary">未评价</span>
+                      {% else %}
+                    <span class="btn-sm btn-success">已评价</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if order.order.pay_status == 1 %}
+                        {% if order.send_status == 1 %}
+                            {% if order.receive_status == 1 %}
+                                {% if order.comment_status == 1 %}
+                                    <a href="{% url 'manager:order_detail' order.id %}">查看评价</a>
+                                    {% else %}
+                                    <span class="btn-sm btn-success">已收货</span>
+                                {% endif %}
+                            {% else %}
+                            <span class="btn-sm btn-primary">未收货</span>
+                            {% endif %}
+                            {% else %}
+                            <a href="{% url 'manager:send_goods' order.id%}" class="btn-sm btn-success">点击发货</a>
+                        {% endif %}
+                    {% else %}
+                        <span class="btn-sm btn-warning">未支付</span>
+                    {% endif %}
+                </td>
+              </tr>
+{#                      {% empty %}#}
+{#                      <tr>#}
+{#                      <td colspan="7">当前没有商品，请添加商品。</td>#}
+{#                      </tr>#}
+            {% endfor %}
+            </tbody>
+            </table>
+            <ul class="list">
+               {% if orderinfo_list.has_previous %}
+                <a href="{% url 'manager:order_list' %}?page={{ orderinfo_list.previous_page_number }}" class="btn-sm btn">&lt;</a>
+            {% endif %}
+            {% for page in page_list %}
+                {% if request.GET.page %}
+                    {% if page == request.GET.page|add:0 %}
+                        <a href="{% url 'manager:order_list' %}?page={{ page }}" class="btn-sm btn-success btn">{{ page }}</a>
+                    {% elif  request.GET.page|add:0 > orderinfo_list.number and page == 1%}
+                        <a href="{% url 'manager:order_list' %}?page={{ page }}" class="btn-sm btn-success btn">{{ page }}</a>
+                    {% else %}
+                        <a href="{% url 'manager:order_list' %}?page={{ page }}" class="btn-sm btn">{{ page }}</a>
+                    {% endif %}
+                {% else %}
+                     {% if page == 1 %}
+                        <a href="{% url 'manager:order_list' %}?page={{ page }}" class="btn-sm btn-success btn">{{ page }}</a>
+                        {% else %}
+                        <a href="{% url 'manager:order_list' %}?page={{ page }}" class="btn-sm btn">{{ page }}</a>
+                     {% endif %}
+                {% endif %}
+            {% endfor %}
+             {% if orderinfo_list.has_next %}
+                <a href="{% url 'manager:order_list' %}?page={{ orderinfo_list.next_page_number }}" class="btn-sm btn">&gt;</a>
+             {% endif %}
+            </ul>
+
+            </div>
+            </div>
+          </div>
+
+{% endblock %}
+
+{% block script %}
+<!-- Page level plugins -->
+  <script src="/static/manager/vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/manager/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+{% endblock %}
+
+
+

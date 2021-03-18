@@ -1,0 +1,75 @@
+{% extends 'base/manage_base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>优选农产品--商品添加</title>
+{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+
+{% block content %}
+    <form action="{% url 'manager:add_goods' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+     <p>
+         <input type="text" class="form-control" placeholder="商品名称"  required name="goods_name">
+     </p>
+    <p>
+         <input type="number" class="form-control" placeholder="现价"  required  name="goods_oprice">
+    </p>
+    <p>
+         <input type="number" class="form-control" placeholder="原价"  required  name="goods_xprice">
+    </p>
+    <p>
+         <input type="number" class="form-control" placeholder="数量"  required  name="goods_count">
+    </p>
+    <p>
+         <input type="datetime-local" class="form-control" placeholder="生产日期"  required  name="goods_production">
+    </p>
+    <p>
+         <input type="text" class="form-control" placeholder="保质期"  required  name="safe_date" maxlength="10">
+    </p>
+    <p>
+         <input type="text" class="form-control" placeholder="存储方法"  required  name="goods_method" maxlength="100">
+    </p>
+    <p>
+         <input type="text" class="form-control" placeholder="商品简介"  required  name="goods_description" maxlength="100">
+    </p>
+    <p>
+         <input type="file" class="form-control" placeholder="商品图片"  required  name="goods_pic">
+    </p>
+    <p>
+         <input type="text" class="form-control" placeholder="配送地址"  required   name="goods_address" maxlength="50">
+    </p>
+    <p>
+        <select name="type" id="type" class="form-control" required>
+            <option value="0">--请选择类别--</option>
+            {% for type in type_list %}
+                <option value="{{ type.id }}">{{ type.type_name }}</option>
+            {% endfor %}
+
+        </select>
+    </p>
+    <p>
+        <label class="radio-inline">
+          <input type="radio" name="status" id="inlineRadio1" value="1"> 上架
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="status" id="inlineRadio2" value="0"> 下架
+        </label>
+    </p>
+    <p>
+        <textarea name="goods_info" id="goods_info" ></textarea>
+    </p>
+    <button class="btn btn-primary">提交</button>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace("goods_info",{uiColor:'#5dd733'})
+    </script>
+{% endblock %}

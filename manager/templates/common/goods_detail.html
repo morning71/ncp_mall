@@ -1,0 +1,69 @@
+{% extends 'base/manage_base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>商品详情</title>
+{% endblock %}
+
+{% block style %}
+    <style>
+    tr{color: black;}
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div style="padding-bottom: 10px">
+    <a href="{% url 'manager:goods_list' %}" class="btn btn-success">返回列表页</a>
+    <a href="{% url 'manager:update_goods' goods.id%}" class="btn btn-primary">编辑</a>
+</div>
+<table class="table table-bordered table-hover">
+    <tr>
+        <th width="130px">商品名称：</th>
+        <td>{{ goods.goods_name}}</td>
+        <th width="130px">商品数量：</th>
+        <td>{{ goods.goods_count }}</td>
+    </tr>
+    <tr>
+        <th>商品现价：</th>
+        <td>{{ goods.goods_oprice }}元</td>
+        <th>商品原价：</th>
+        <td>{{ goods.goods_xprice }}元</td>
+    </tr>
+    <tr>
+        <th>生产日期：</th>
+        <td>{{ goods.goods_production }}</td>
+        <th>保质期：</th>
+        <td>{{ goods.safe_date }}</td>
+    </tr>
+    <tr>
+        <th>存储方法：</th>
+        <td>{{ goods.goods_method }}</td>
+        <th>商品简介：</th>
+        <td>{{ goods.goods_description }}</td>
+    </tr>
+    <tr>
+        <th>配送地址：</th>
+        <td>{{ goods.goods_address }}</td>
+        <th>商品类别：</th>
+        <td>{{ goods.type }}</td>
+    </tr>
+    <tr>
+        <th>商品图片：</th>
+        <td colspan="3"><img src="/static/{{ goods.goods_pic }}" alt="{{ goods.goods_name }}"></td>
+    </tr>
+    <tr>
+        <th>商品详情：</th>
+        <td colspan="3">{{ goods.goods_info |safe }}</td>
+
+    </tr>
+
+</table>
+
+{% endblock %}
+
+
+{% block script %}
+
+
+{% endblock %}

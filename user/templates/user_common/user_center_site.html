@@ -1,0 +1,77 @@
+{% extends 'base/user_base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>优选农产品-用户中心</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    {% include 'base/user_header.html' %}
+    {% include 'base/user_center.html' %}
+    <div class="main_con clearfix">
+		<div class="right_content clearfix">
+				<h3 class="common_title2">收货地址</h3>
+				<div class="site_con">
+					<dl>
+						<dt>当前地址：</dt>
+                        {% for address in address_list %}
+                        <dd>
+                            <input type="radio" name="address" onclick="f({{ address.id }})"
+                            {% if address.isdefault == 1 %}
+                            checked
+                            {% endif %}>
+                            {{ address.username }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ address.userphone }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ address.address }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="{% url 'user:user_site' %}?address_id={{ address.id }}">编辑</a>
+                        </dd>
+                        {% endfor %}
+					</dl>
+				</div>
+				<h3 class="common_title2">编辑地址</h3>
+				<div class="site_con">
+					<form method="post" action="{% url 'user:user_site' %}">
+                        {% csrf_token %}
+						<div class="form_group">
+							<label>收件人：</label>
+							<input type="text" name="username" value="{{ data.username }}">
+						</div>
+						<div class="form_group form_group2">
+							<label>详细地址：</label>
+							<textarea class="site_area" name="address" >{{ data.address }}</textarea>
+						</div>
+						<div class="form_group">
+							<label>手机：</label>
+							<input type="text" name="userphone" value="{{ data.phone }}">
+							<input type="hidden" name="address_id" value="{{ data.id }}">
+						</div>
+						<input type="submit" name="" value="提交" class="info_submit">
+					</form>
+				</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    function f(id) {
+        console.log(111);
+        $.ajax({
+            url:"{% url 'user:set_address' %}",
+            data:{id:id},
+            type:"get",
+            dataType:"json",
+            success:function (data) {
+                if(data.flag==1){
+                    window.alert("地址修改成功!")
+                }else{
+                    window.location.href="/user/login"
+                }
+            }
+        })
+    }
+    </script>
+{% endblock %}

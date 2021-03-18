@@ -1,0 +1,85 @@
+{% extends 'base/user_base.html' %}
+{% load static %}
+{%load manager_extras%}
+
+{% block title %}
+    <title>优选农产品-订单评价</title>
+{% endblock %}
+
+{% block style %}
+    <script src="{% static "user/js/jquery.js" %}"></script>
+    <script src="{% static "user/js/jquery.raty.min.js" %}"></script>
+
+    <style>
+    body{width: 1000px;margin:0 auto}
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'base/user_header.html' %}
+    <div class="body clearfix">
+    <ul class="order_goods_list clearfix">
+        <li class="col01">商品图片</li>
+        <li class="col02">商品名称</li>
+        <li class="col03">商品数量</li>
+        <li class="col04">商品单价</li>
+        <li class="col03">商品总价</li>
+        <li class="col01"><img src="/static/{{ o.goods.goods_pic }}"></li>
+        <li class="col02"><a href="{% url 'goods:goods'%}?goods_id={{ o.goods.id }}">{{ o.goods.goods_name | set_goods_name }}</a></li>
+        <li class="col03">{{ o.number }}</li>
+        <li class="col04">{{ o.money }}元</li>
+        <li class="col03"><em>{% widthratio o.money 1 o.number %}</em></li>
+    </ul>
+    </div>
+    <form method="post" action="{% url 'user:comment' o.id%}">
+    	{% csrf_token %}
+    <input type="hidden" name="orderinfo_id" value="{{ o.id }}">
+    <div class="clearfix">
+        <div class="fl">商品评分：</div>
+        <div id="star1" class="fl"></div>
+    </div>
+    <div class="clearfix">
+        <div class="fl">客服评分：</div>
+        <div id="star2" class="fl"></div>
+    </div>
+    <div class="clearfix">
+        <div style="float: left">物流评分：</div>
+        <div id="star3" class="fl"></div>
+    </div>
+    <div>
+        <textarea name="content" id="order"></textarea>
+    </div>
+    <div>
+        <input type="checkbox" name="is_anonymous" value="1">匿名评价
+    </div>
+    <script type="text/javascript">
+		$('#star1').raty({
+            path: '/static/user/img/',
+            scoreName: "goods_score",
+        });
+		$('#star2').raty({
+            path: '/static/user/img/',
+            scoreName: "service_score",
+        });
+		$('#star3').raty({
+            path: '/static/user/img/',
+            scoreName: "logistics_score",
+        });
+	</script>
+    <div>
+        <button>提交评论</button>
+    </div>
+
+    </form>
+{% endblock %}
+
+
+
+{% block script %}
+    <script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace("order",{uiColor:'#5dd733'})
+    </script>
+{% endblock %}
+

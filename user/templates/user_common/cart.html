@@ -1,0 +1,156 @@
+{% extends 'base/user_base.html' %}
+{% load static %}
+{% load manager_extras %}
+
+{% block title %}
+    <title>优选农产品-购物车</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    {% include 'base/user_header.html' %}
+    <div class="total_count">全部商品<em>{{ carts_list.count }}</em>件</div>
+	<ul class="cart_list_th clearfix">
+		<li class="col01">商品名称</li>
+		<li class="col02">商品现价</li>
+		<li class="col03">商品原价</li>
+		<li class="col04">数量</li>
+		<li class="col05">小计</li>
+		<li class="col06">操作</li>
+	</ul>
+    <form action="{% url 'user:place_order' %}" method="post">
+    {% csrf_token %}
+    {% for carts in carts_list %}
+    <ul class="cart_list_td clearfix">
+		<li class="col01"><input type="checkbox" name="carts_name" checked value="{{ carts.id }}"></li>
+		<li class="col02"><img src="/static/{{ carts.goods.goods_pic }}"></li>
+		<li class="col03">{{ carts.goods.goods_name|set_goods_name}}</li>
+		<li class="col04" id="oprice_{{ carts.id }}">{{ carts.goods.goods_oprice }}元</li>
+		<li class="col05"><del>{{ carts.goods.goods_xprice }}</del>元</li>
+		<li class="col06">
+			<div class="num_add">
+				<a href="javascript:;" class="add fl" id="add_{{ carts.id }}" onclick="change_count('add',{{ carts.id }})">+</a>
+				<input type="text" class="num_show fl" value="{{ carts.count }}" id="carts_{{ carts.id }}" onblur="show_value({{ carts.id }})">
+				<a href="javascript:;" class="minus fl" id="red_{{ carts.id }}" onclick="change_count('delete',{{ carts.id }})">-</a>
+			</div>
+		</li>
+		<li class="col07"><span id="xj_{{ carts.id }}">{% widthratio carts.goods.goods_oprice 1 carts.count%}</span>元</li>
+		<li class="col08"><a onclick="del({{ carts.id }})" href="javascript:">删除</a></li>
+	</ul>
+    {% endfor %}
+
+	<ul class="settlements">
+		<li class="col01"><button  onclick="check_all('on')" type="button">全选</button></li>
+		<li class="col02"><button onclick="check_all('out')" type="button">全不选</button></li>
+		<li class="col03">合计(不含运费)：<span>¥</span><em id="total">42.60</em><br>共计<b id="total_number">{{carts_list.count }}</b>件商品</li>
+		<li class="col04"><input type="submit" value="去结算"></li>
+	</ul>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script>
+    //删除某条购物车
+    function del(id){
+        var csrftoken  = $("input[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+        url:"{% url 'user:carts' %}",
+        type:"post",
+        dataType:"json",
+        data:{"carts_id":id,"csrfmiddlewaretoken":csrftoken,'type':'delete'},
+        success:function (data) {
+            window.location.href = '/user/carts'
+            }
+        })
+    }
+    //计算总价钱
+    function total() {
+        var input = $("input[class='num_show fl']");
+        console.log(input);
+        var total=0;
+        $("span[id*='xj_']").each(function (obj,ev) {
+            var len = $(this).parent().prevAll($('.col01')).children('form input[type=checkbox]:checked').length;
+            console.log(len);
+            if(len==1){
+                var xj=$(this).html();
+                console.log(xj);
+                total+=Number(xj);
+                console.log(total)
+            }
+        });
+        $('#total').html(total)
+    }
+    total();
+    //全选和反选
+    function check_all(type) {
+        if(type=='on'){
+             $('form input[type=checkbox]').prop('checked',true);
+        }else {
+             $('form input[type=checkbox]').prop('checked',false);
+        }
+        total();
+        set_number();
+    }
+    //计算选中商品的数量
+    function set_number(){
+        var total_number = $('form input[type=checkbox]:checked').length;
+        $('#total_number').html(total_number);
+        total()
+    }
+    //每次选中或者取消都修改状态
+    $("form input[type=checkbox]").click(function () {
+        set_number()
+    });
+
+    //修改数量
+    change_count = function (type,carts_id) {
+            var count = parseInt($('#carts_'+carts_id).val());
+            console.log(count);
+            if(count<=0){
+                $('#show_count').val(1)
+            }
+            else {
+                if(type=="add"){
+                count+=1;
+                }else{
+                    if(type=="delete"){
+                         if(count>1){count-=1}
+                    }
+                }
+                console.log('count',count);
+                show_number(count,carts_id)
+            }
+        };
+    function show_value(carts_id) {
+        var count = $('#carts_'+carts_id).val();
+        show_number(count,carts_id)
+    }
+    function show_number(count,carts_id) {
+            var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
+            var price = parseInt($("#oprice_"+carts_id).text());
+            console.log(price,2222222);
+            $.ajax({
+                url:"{% url 'user:carts_check_count' %}",
+                data:{carts_id:carts_id,csrfmiddlewaretoken:csrfmiddlewaretoken,count:count},
+                dataType:"json",
+                type:"post",
+                success:function (data) {
+                if(data.status == 1){
+                    $('#carts_'+carts_id).val(data.data);
+                    $('#xj_'+carts_id).text(data.data*price);
+                    console.log(data.data*price,1111);
+                    total()
+                    }
+                    else{
+                        window.alert("商品已下架，请选择其他商品。");
+                        window.location.href = data.data
+                        }
+                }
+            })
+        }
+
+    </script>
+{% endblock %}
+

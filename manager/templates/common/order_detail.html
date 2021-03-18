@@ -1,0 +1,121 @@
+{% extends 'base/manage_base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>商品详情</title>
+{% endblock %}
+
+
+{% block style %}
+    <style>
+    tr{color: black;}
+    </style>
+    <script type="text/javascript" src="{% static 'user/js/jquery.js'%}"></script>
+    <script type="text/javascript" src="{% static 'user/js/jquery.raty.js'%}"></script>
+{% endblock %}
+
+{% block content %}
+<div style="padding-bottom: 10px">
+    <a href="{% url 'manager:order_list' %}" class="btn btn-success">返回列表页</a>
+</div>
+<table class="table table-bordered table-hover">
+    <tr>
+        <th width="130px">订单编号：</th>
+        <td>{{ o.order_code}}</td>
+        <th width="130px">商品名称：</th>
+        <td>{{ o.goods.goods_name }}</td>
+    </tr>
+    <tr>
+        <th>商品数量：</th>
+        <td>{{ o.number }}</td>
+        <th>总价：</th>
+        <td>{% widthratio o.money 1 o.number %}元</td>
+    </tr>
+    <tr>
+        <th>付款状态：</th>
+        <td>{{ o.order.pay_status }}</td>
+        <th>付款时间：</th>
+        <td>{{ o.order.pay_time }}</td>
+    </tr>
+    <tr>
+        <th>发货状态：</th>
+        <td>{{ o.send_status }}</td>
+        <th>发货时间：</th>
+        <td>{{ o.send_time }}</td>
+    </tr>
+    <tr>
+        <th>收货状态：</th>
+        <td>{{ o.receive_status }}</td>
+        <th>收货时间：</th>
+        <td>{{ o.receive_time }}</td>
+    </tr>
+    <tr>
+        <th>评价状态：</th>
+        <td>{{ o.comment_status }}</td>
+        <th>评价时间</th>
+        <td>{{ o.comment_set.first.create_time }}</td>
+    </tr>
+    {% if o.comment_status %}
+     <tr>
+        <th>商品评分：</th>
+        <td><div id="goods_score"></div></td>
+        <script type="text/javascript">
+            var start = {{ o.comment_set.first.goods_score }};
+            $('#goods_score').raty({
+              path:"/static/user/img",  
+              readOnly:  true,
+              start: start,
+            });
+        </script>
+        <th>客服评分：</th>
+        <td><div id="service_score"></div></td>
+        <script type="text/javascript">
+             var start = {{ o.comment_set.first.service_score }};
+            $('#service_score').raty({
+              path:"/static/user/img",  
+              readOnly:  true,
+              start: start,
+            });
+        </script>
+    </tr>
+     <tr>
+        <th>物流评分：</th>
+        <td><div id="logistics_score"></div></td>
+        <script type="text/javascript">
+             var start = {{ o.comment_set.first.logistics_score }};
+            $('#logistics_score').raty({
+              path:"/static/user/img",  
+              readOnly:  true,
+              start: start,
+            });
+        </script>
+        <th>是否匿名</th>
+        <td>
+            {% if o.comment_set.first.is_anonymous %}
+                匿名用户
+            {% else %}
+            {{ o.order.user }}    
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>评价内容：</th>
+        <td colspan="3">{{ o.comment_set.first.content | safe}}</td>
+    </tr>
+    <tr>
+        <th>商家回复时间：</th>
+        <td>{{ o.comment_set.first.reply_time }}</td>
+        <th>回复内容</th>
+        <td>{{ o.comment_set.first.shop_reply }}</td>
+    </tr>
+    {% endif %}
+    
+</table>
+
+{% endblock %}
+
+
+{% block script %}
+
+
+{% endblock %}

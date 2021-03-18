@@ -1,0 +1,136 @@
+{% extends 'base/user_base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>商品列表</title>
+{% endblock %}
+
+{% block style %}
+    <script src="/static/goods/js/vue.js"></script>
+    <script src="/static/goods/js/vue-resource.js"></script>
+{% endblock %}
+
+{% block content %}
+    {% include 'base/user_header.html' %}
+    <div class="navbar_con">
+		<div class="navbar clearfix">
+			<div class="subnav_con fl">
+				<h1>全部商品分类</h1>
+				<span></span>
+				<ul class="subnav">
+					<li><a href="#" class="fruit">新鲜水果</a></li>
+					<li><a href="#" class="seafood">海鲜水产</a></li>
+					<li><a href="#" class="meet">猪牛羊肉</a></li>
+					<li><a href="#" class="egg">禽类蛋品</a></li>
+					<li><a href="#" class="vegetables">新鲜蔬菜</a></li>
+					<li><a href="#" class="ice">速冻食品</a></li>
+				</ul>
+			</div>
+			<ul class="navlist fl">
+				<li><a href="">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="breadcrumb">
+		<a href="#">全部分类</a>
+		<span>></span>
+		<a href="#">新鲜水果</a>
+	</div>
+
+	<div class="main_wrap clearfix" id="content">
+    {% verbatim myblock%}
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>新品推荐</h3>
+				<ul>
+				<li v-for="goods in new_goods_list">
+					<a v-bind:href="'/goods/goods?goods_id='+goods.id"><img v-bind:src="'/static/'+goods.goods_pic"></a>
+					<h4><a v-bind:href="'/goods/goods?goods_id='+goods.id">{{ goods.goods_name }}</a></h4>
+					<div class="prize">￥{{ goods.goods_oprice }}</div>
+				</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="r_wrap fr clearfix">
+			<div class="sort_bar">
+				<a href="#" class="active">默认</a>
+				<a href="#">价格</a>
+				<a href="#">人气</a>
+			</div>
+
+			<ul class="goods_type_list clearfix">
+				<li v-for="goods in goods_list">
+					<a v-bind:href="'/goods/goods?goods_id='+goods.id"><img v-bind:src="'/static/'+goods.goods_pic"></a>
+					<h4><a v-bind:href="'/goods/goods?goods_id='+goods.id">{{ goods.goods_name }}</a></h4>
+					<div class="operate">
+						<span class="prize">现价:￥{{ goods.goods_oprice }}</span>
+						<del class="unit">原价:￥{{ goods.goods_xprice }}</del>
+						<a v-bind:href="'/user/carts?goods_id='+goods.id" class="add_goods" title="加入购物车"></a>
+					</div>
+				</li>
+			</ul>
+
+			<div class="pagenation">
+
+				<a v-if="page_previous" @click="click(page_previous)" href="javascript:;">&lt;上一页</a>
+                <span v-for="page in page_range">
+                    <a @click="click(page)" class="active" v-if="p == page" href="javascript:;">{{ page }}</a>
+                    <a @click="click(page)" v-else href="javascript:;">{{ page }}</a>
+                </span>
+				<a v-if="page_next" @click="click(page_next)" href="javascript:;">下一页&gt;</a>
+			</div>
+		</div>
+	{% endverbatim myblock%}
+	</div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+    {#fn=#}
+    var t_id = {{ t_id }};
+    var name = $("input[name='name']").val();
+    Vue.use(VueResource);
+    var vue = new Vue({
+        el:"#content",
+        data:{
+            goods_list:"",
+            page_range:"",
+            p:"",
+            page_next:"",
+            page_previous:"",
+            new_goods_list:[]
+        },
+        methods:{
+            click:function (page) {
+                url='{% url "goods:list" %}?t_id='+t_id+'&page='+page+"&name="+name;
+                console.log(url);
+                this.$http.get(url).then(
+                    //相当于ajax中的success
+                    function (data) {
+                        console.log(data['data']);
+                        this.goods_list = data['data']['data'];
+                        this.new_goods_list = data['data']['data'].slice(0,2);
+                        this.page_range = data['data']['page_range'];
+                        this.p =  data['data']['p'];
+                        this.page_next =  data['data']['page_next'];
+                        this.page_previous =  data['data']['page_previous'];
+                    },
+                    function (error) {
+                        console.log(error)
+                    }
+                )
+            }
+        },
+        created(){this.click(1)}
+    });
+
+    </script>
+{% endblock %}
+

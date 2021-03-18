@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>优选农产品商家注册页面</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="/static/manager/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="/static/manager/css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-gradient-primary">
+
+  <div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">w
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+          <div class="col-lg-7">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">注册账号</h1>
+              </div>
+              <form class="user" action="" method="post">
+                  {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user username" id="exampleFirstName" placeholder="用户名" name="username" required onblur="check_username()">
+                </div>
+                <div class="form-group">
+                  <input type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="请输入邮箱" name="email" required>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="输入密码" name="password1" required>
+                  </div>
+                  <div class="col-sm-6">
+                    <input type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="确认密码" name="password2" required>
+                  </div>
+                </div>
+                  {% if error %}
+                  <div style="color: red;font-size: 14px">{{ error }}</div>
+                  {% endif %}
+                  <input class="btn btn-primary btn-user btn-block" value="注册" disabled type="submit" id="submit">
+                <hr>
+              </form>
+              <hr>
+              <div class="text-center">
+                <a class="small" href="{% url 'manager:forget_password' %}">忘记密码</a>
+              </div>
+              <div class="text-center">
+                <a class="small" href="{% url 'manager:login' %}">已有账号，去登录</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="/static/manager/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/manager/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="/static/manager/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="/static/manager/js/sb-admin-2.min.js"></script>
+  <script>
+      /*
+      var usernmae = document.getElementById('exampleFirstName');
+      console.log(1,usernmae.value);
+      var user = $('#exampleFirstName');        //通过id选择数据。
+      console.log(2,user.val);
+      var user = $('input[name="username"]');  //通过标签选择器与input框的属性获取。
+      console.log(3,user);
+
+      var user = $('.username');                //通过类名去获取。
+      console.log(4,user);
+        */
+      function check_username() {
+          var user = $('input[name="username"]').val();
+          console.log(user);
+          $.ajax({
+              url:'{% url "manager:check_username" %}',
+              data:{username:user},
+              dataType:'json',
+              type:'get',
+              success:function (data) {
+                    console.log(data);
+                    if(data.flag == 1 ){
+                        $('#submit').attr('disabled',false)
+                    }
+                    else {
+                        window.alert('用户名不能为空或重复！')
+                    }
+              },
+              error:function (message) {
+              }
+          })
+      }
+
+
+  </script>
+
+</body>
+
+</html>

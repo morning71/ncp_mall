@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	{% block title %}
+	{% endblock %}
+	<link rel="stylesheet" type="text/css" href="/static/user/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="/static/user/css/main.css">
+    <script src="/static/user/js/jquery-1.11.0.js"></script>
+{#    <link rel="stylesheet" href="/static/manager/css/sb-admin-2.css">#}
+{#    <script src="/static/manager/js/sb-admin-2.js"></script>#}
+    {% block style %}
+
+    {% endblock %}
+</head>
+<body>
+
+    {% block content %}
+
+    {% endblock %}
+
+
+	<div class="footer no-mp">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>
+		</div>
+
+	</div>
+
+	{% block script %}
+	{% endblock %}
+</body>
+</html>
